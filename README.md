@@ -1,12 +1,13 @@
-# Pipeline de trabajo final de maestría en Ciencia de datos.
+# Pipeline de Tesis de Maestría en Ciencia de Datos
 
-Titulo de la tesis: Estudio in silico para la generación de datos proteómicos sintéticos y evaluación de modelos predictivos en la enfermedad de Chagas.
-Trabajo presentado para obtener el título de Magíster en Ciencia de Datos
-Facultad de Ingeniería, Universidad Austral.
+Título de la tesis:  
+Estudio in silico para la generación de datos proteómicos sintéticos y evaluación de modelos predictivos en la enfermedad de Chagas.  
+Trabajo presentado para optar al título de Magíster en Ciencia de Datos  
+Facultad de Ingeniería, Universidad Austral
 
 El repositorio contiene el pipeline in silico usado en la tesis: generación de un dataset proteómico
 sintético a partir de datos publicados (Garg et al., 2016), entrenamiento y evaluación de
-modelos de ML einterpretación de proteínas candidatas.
+modelos de ML e interpretación de proteínas candidatas.
 
 ## Estructura
 
