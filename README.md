@@ -1,10 +1,11 @@
 # Estudio in silico para la generación de datos proteómicos sintéticos y evaluación de modelos predictivos en la enfermedad de Chagas.
 
-Código de la tesis de Maestría en Ciencia de Datos (Facultad de Ingeniería, Universidad Austral cohorte 2024-2025) de Brenda Buonincontro.
+Trabajo presentado para obtener el título de Magíster en Ciencia de Datos
+Facultad de Ingeniería, Universidad Austral.
 
 El repositorio contiene el pipeline in silico usado en la tesis: generación de un dataset proteómico
 sintético a partir de datos publicados (Garg et al., 2016), entrenamiento y evaluación de
-modelos de ML, y selección/interpretación de proteínas candidatas.
+modelos de ML einterpretación de proteínas candidatas.
 
 ## Estructura
 
