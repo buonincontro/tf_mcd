@@ -1,9 +1,9 @@
-# Priorización in silico de proteínas candidatas en la enfermedad de Chagas mediante un pipeline de machine learning
+# Pipeline in silico para la priorización de biomarcadores proteómicos mediante machine learning utilizando como caso de estudio la enfermedad de Chagas
 
-Código del Trabajo Final de Maestría en Ciencia de Datos de Brenda Buonincontro.
+Código de la tesis de Maestría en Ciencia de Datos de Brenda Buonincontro.
 
 El repositorio contiene el pipeline in silico usado en la tesis: generación de un dataset proteómico
-sintético a partir de datos publicados de Chagas (Garg et al., 2016), entrenamiento y evaluación de
+sintético a partir de datos publicados (Garg et al., 2016), entrenamiento y evaluación de
 modelos de ML, y selección/interpretación de proteínas candidatas.
 
 ## Estructura
@@ -35,3 +35,4 @@ Los datos base (Table 2) provienen de:
 > Garg et al. (2016). Proteomic profiling of PBMCs in Chagas disease patients. *[completar referencia]*
 
 No se utilizan datos de pacientes reales; el dataset es enteramente sintético.
+
