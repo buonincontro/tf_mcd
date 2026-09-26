@@ -2,8 +2,8 @@
 
 Título de la tesis:  
 Estudio in silico para la generación de datos proteómicos sintéticos y evaluación de modelos predictivos en la enfermedad de Chagas.  
-Trabajo presentado para optar al título de Magíster en Ciencia de Datos  
-Facultad de Ingeniería, Universidad Austral
+Trabajo presentado para optar al título de Magíster en Ciencia de Datos.  
+Facultad de Ingeniería, Universidad Austral.
 
 El repositorio contiene el pipeline in silico usado en la tesis: generación de un dataset proteómico
 sintético a partir de datos publicados (Garg et al., 2016), entrenamiento y evaluación de
