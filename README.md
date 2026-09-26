@@ -1,5 +1,6 @@
-# Estudio in silico para la generación de datos proteómicos sintéticos y evaluación de modelos predictivos en la enfermedad de Chagas.
+# Pipeline de trabajo final de maestría en Ciencia de datos.
 
+Titulo de la tesis: Estudio in silico para la generación de datos proteómicos sintéticos y evaluación de modelos predictivos en la enfermedad de Chagas.
 Trabajo presentado para obtener el título de Magíster en Ciencia de Datos
 Facultad de Ingeniería, Universidad Austral.
 
