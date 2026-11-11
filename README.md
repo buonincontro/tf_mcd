@@ -25,8 +25,9 @@ eda/
 ├── eda_estadisticas_por_proteina.csv
 └── figuras/
 simulador/
-├── simulador_verdad_conocida.py    # reimplementación del simulador (sección 4.4): permutación con y sin el test
-└── resumen_escenarios.csv          # resultados de 11 escenarios x 100 simulaciones
+├── simulador_completo.py           # simulador con verdad conocida (sección 4.4): 12 escenarios x 100 simulaciones
+├── tablas_figuras.py               # Tablas 6 a 8 y Figuras 12 a 14
+└── resultados/                     # resumen, tablas, figuras y resultados por simulación
 data/
 ├── tabla2_garg2016.csv             # Tabla 2 de Garg et al. (2016), CC BY 4.0
 └── dataset_sintetico_pbmc.csv      # dataset sintético (83 pacientes x 192 proteínas)
@@ -63,28 +64,30 @@ python scripts/reproducir_dataset.py      # genera data/tabla2_garg2016.csv y da
 python scripts/tabla3_sin_fuga.py --grid  # Tabla 3 con y sin fuga de información
 python eda/eda_192_proteinas.py data/dataset_sintetico_pbmc.csv eda
 python eda/eda_figuras.py data/dataset_sintetico_pbmc.csv eda/eda_estadisticas_por_proteina.csv eda/figuras
-python simulador/simulador_verdad_conocida.py data/tabla2_garg2016.csv 100
+python simulador/simulador_completo.py data/tabla2_garg2016.csv 100   # unos 4 minutos en 10 núcleos
+python simulador/tablas_figuras.py
 ```
 
 `reproducir_dataset.py` repite la simulación del notebook 01 con la misma semilla y obtiene el mismo dataset
 (media por grupo 99.9 / 171.6 / 179.4; CV promedio 0.47 / 0.64 / 0.73).
 
-## Importancia por permutación con y sin el test
+## Simulador con verdad conocida
 
-`simulador/simulador_verdad_conocida.py` reimplementa el simulador con verdad conocida para la regresión logística L2
-y calcula la importancia por permutación de tres maneras. Recall de los 19 biomarcadores verdaderos (100 simulaciones):
+`simulador/simulador_completo.py` reimplementa el simulador de la sección 4.4 (19 biomarcadores verdaderos, 173 proteínas
+de efecto débil y 500 nulas, con correlación por bloques) y evalúa regresión logística L1 y L2, Random Forest y Gradient
+Boosting en 12 escenarios de 100 simulaciones. `simulador/tablas_figuras.py` genera las Tablas 6 a 8 y las Figuras 12 a 14.
+Dos corridas dan resultados idénticos (semilla maestra fija).
 
-| Pacientes | Coeficientes | Permutación sobre el test | Permutación sobre el entrenamiento | Permutación por validación cruzada |
-|---|---|---|---|---|
-| 30 | 0.40 | 0.70 | 0.02 | 0.24 |
-| 50 | 0.52 | 0.72 | 0.03 | 0.35 |
-| 100 | 0.70 | 0.72 | 0.04 | 0.49 |
-| 200 | 0.80 | 0.66 | 0.03 | 0.58 |
+La importancia por permutación se calcula por validación cruzada dentro del entrenamiento. Calculada sobre el test
+independiente de 200 pacientes recupera más biomarcadores (0.73 frente a 0.35 con 50 pacientes), pero usa 200 pacientes
+adicionales con estadio conocido, por lo que no es comparable con los demás criterios; se informa solo como referencia
+(`L2_perm_test` en `resultados/resumen.csv`).
 
-La ventaja de la permutación con pocos pacientes se debe a los 200 pacientes adicionales del test. No reemplaza al
-simulador original: no incluye L1, Random Forest, Gradient Boosting ni el escenario de datos faltantes.
+Decisiones que la tesis no detalla y que se fijaron en esta reimplementación: la regularización de L1 se busca entre
+0.01 y 10, y los datos faltantes se generan con una probabilidad que decrece con la abundancia (función logística,
+20% en promedio).
 
 ## Pendiente
 
-Falta subir el código del simulador con verdad conocida y de los análisis asociados (secciones 4.4 y 5.5 a 5.8
-de la tesis: 12 escenarios x 100 simulaciones, repetición con 200 semillas y verificación de la distribución lognormal).
+Falta subir el código original del simulador con verdad conocida, la repetición con 200 semillas (sección 5.3), el
+control de calidad del simulador y la verificación de la distribución lognormal (sección 5.5).

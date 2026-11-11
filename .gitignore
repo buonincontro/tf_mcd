@@ -6,3 +6,4 @@ __pycache__/
 !data/*.csv
 !eda/*.csv
 !simulador/*.csv
+!simulador/resultados/*.csv
