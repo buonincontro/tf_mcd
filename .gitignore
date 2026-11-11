@@ -7,3 +7,6 @@ __pycache__/
 !eda/*.csv
 !simulador/*.csv
 !simulador/resultados/*.csv
+presentacion/plantillas_austral/
+presentacion/recursos/
+presentacion/vista_previa/lamina_*.png

@@ -28,6 +28,10 @@ simulador/
 ├── simulador_completo.py           # simulador con verdad conocida (sección 4.4): 12 escenarios x 100 simulaciones
 ├── tablas_figuras.py               # Tablas 6 a 8 y Figuras 12 a 14
 └── resultados/                     # resumen, tablas, figuras y resultados por simulación
+presentacion/
+├── Defensa - Buonincontro - Trabajo Final MCD.pptx   # presentación de la defensa (20 láminas)
+├── armar_defensa.py y contenido_defensa.py          # generan la presentación
+└── vista_previa/                                    # miniaturas de las láminas
 data/
 ├── tabla2_garg2016.csv             # Tabla 2 de Garg et al. (2016), CC BY 4.0
 └── dataset_sintetico_pbmc.csv      # dataset sintético (83 pacientes x 192 proteínas)
