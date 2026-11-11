@@ -24,6 +24,9 @@ eda/
 ├── eda_figuras.py                  # Figuras A1 a A5 del Anexo
 ├── eda_estadisticas_por_proteina.csv
 └── figuras/
+simulador/
+├── simulador_verdad_conocida.py    # reimplementación del simulador (sección 4.4): permutación con y sin el test
+└── resumen_escenarios.csv          # resultados de 11 escenarios x 100 simulaciones
 data/
 ├── tabla2_garg2016.csv             # Tabla 2 de Garg et al. (2016), CC BY 4.0
 └── dataset_sintetico_pbmc.csv      # dataset sintético (83 pacientes x 192 proteínas)
@@ -60,10 +63,26 @@ python scripts/reproducir_dataset.py      # genera data/tabla2_garg2016.csv y da
 python scripts/tabla3_sin_fuga.py --grid  # Tabla 3 con y sin fuga de información
 python eda/eda_192_proteinas.py data/dataset_sintetico_pbmc.csv eda
 python eda/eda_figuras.py data/dataset_sintetico_pbmc.csv eda/eda_estadisticas_por_proteina.csv eda/figuras
+python simulador/simulador_verdad_conocida.py data/tabla2_garg2016.csv 100
 ```
 
 `reproducir_dataset.py` repite la simulación del notebook 01 con la misma semilla y obtiene el mismo dataset
 (media por grupo 99.9 / 171.6 / 179.4; CV promedio 0.47 / 0.64 / 0.73).
+
+## Importancia por permutación con y sin el test
+
+`simulador/simulador_verdad_conocida.py` reimplementa el simulador con verdad conocida para la regresión logística L2
+y calcula la importancia por permutación de tres maneras. Recall de los 19 biomarcadores verdaderos (100 simulaciones):
+
+| Pacientes | Coeficientes | Permutación sobre el test | Permutación sobre el entrenamiento | Permutación por validación cruzada |
+|---|---|---|---|---|
+| 30 | 0.40 | 0.70 | 0.02 | 0.24 |
+| 50 | 0.52 | 0.72 | 0.03 | 0.35 |
+| 100 | 0.70 | 0.72 | 0.04 | 0.49 |
+| 200 | 0.80 | 0.66 | 0.03 | 0.58 |
+
+La ventaja de la permutación con pocos pacientes se debe a los 200 pacientes adicionales del test. No reemplaza al
+simulador original: no incluye L1, Random Forest, Gradient Boosting ni el escenario de datos faltantes.
 
 ## Pendiente
 
