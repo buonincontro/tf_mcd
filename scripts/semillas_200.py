@@ -1,9 +1,3 @@
-"""Sección 5.3 y Figura 6: el diseño exploratorio (25 C/A, 28 C/S; partición 80/20) repetido con 200 semillas.
-
-En cada repetición se simula una cohorte nueva y una partición distinta, y se mide el AUC de los tres
-modelos en el conjunto de validación (11 pacientes).
-Uso: python scripts/semillas_200.py data/tabla2_garg2016.csv [carpeta_salida]
-"""
 import os, sys, numpy as np, pandas as pd, matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt

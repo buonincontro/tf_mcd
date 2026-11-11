@@ -1,12 +1,3 @@
-"""Tabla 3 con y sin fuga de información en la validación cruzada.
-
-Repite la validación cruzada del notebook 02 de dos maneras:
-  - "con fuga": escalado ajustado sobre todo el conjunto de entrenamiento antes del 5-fold (como en el notebook);
-  - "sin fuga": StandardScaler dentro de un Pipeline, ajustado en cada partición.
-En este dataset ambos esquemas dan los mismos valores (0.957 / 0.935 / 0.617).
-
-Uso: python scripts/tabla3_sin_fuga.py [data/dataset_sintetico_pbmc.csv] [--grid]
-"""
 import os
 import sys
 import warnings
@@ -30,7 +21,7 @@ datos = datos[datos["Grupo"].isin(["C/A", "C/S"])]
 X, y = datos[proteinas], datos["Grupo"]
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, stratify=y, random_state=42)
 cv = StratifiedKFold(n_splits=5, shuffle=True, random_state=42)
-X_train_esc = StandardScaler().fit_transform(X_train)  # esquema original (con fuga)
+X_train_esc = StandardScaler().fit_transform(X_train)
 
 modelos = {
     "Regresión logística": lambda: LogisticRegression(penalty="l2", max_iter=1000, random_state=42),

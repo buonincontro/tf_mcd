@@ -1,11 +1,3 @@
-"""Simulador con verdad conocida (sección 4.4 de la tesis), reimplementación completa.
-
-Métodos: regresión logística L1 (coef != 0) y L2 (|coef|, SHAP, permutación por validación
-cruzada dentro del entrenamiento y, como referencia, permutación sobre el test), Random Forest
-y Gradient Boosting (importancia por impureza). 12 escenarios x 100 simulaciones.
-
-Uso: python simulador/simulador_completo.py data/tabla2_garg2016.csv [n_rep] [carpeta_salida]
-"""
 import os, sys, warnings, itertools
 import numpy as np, pandas as pd
 from joblib import Parallel, delayed
@@ -38,7 +30,7 @@ def generar(rng, n, mu, d, cv, rho, bloques, p_falt):
     y = np.repeat([0, 1], n // 2)
     z = rng.standard_normal((n, bloques.max() + 1))[:, bloques]
     X = mu + np.outer(y, d) + sigma * (np.sqrt(rho) * z + np.sqrt(1 - rho) * rng.standard_normal((n, p)))
-    if p_falt:  # faltantes no aleatorios: más probables cuanto menor es la abundancia (logística, media ~ p_falt)
+    if p_falt:
         z = (X - X.mean()) / X.std(); X[rng.random((n, p)) < 1 / (1 + np.exp(-(np.log(p_falt / (1 - p_falt)) - 0.234 - z)))] = np.nan
     return X, y
 
@@ -56,13 +48,13 @@ def una_simulacion(semilla, n, mu_ca, delta, es_verdad, cv=0.67, efecto=1.0, rho
     p_falt = faltantes
     Xtr, ytr = generar(rng, n, mu, d, cv, rho, bloques, p_falt)
     Xte, yte = generar(rng, N_TEST, mu, d, cv, rho, bloques, p_falt)
-    if faltantes > 0:  # imputación: mínimo observado en el entrenamiento menos 1 (log2)
+    if faltantes > 0:
         relleno = np.nanmin(Xtr, axis=0) - 1; relleno = np.where(np.isnan(relleno), 0.0, relleno)
         Xtr = np.where(np.isnan(Xtr), relleno, Xtr); Xte = np.where(np.isnan(Xte), relleno, Xte)
     m, s = Xtr.mean(0), Xtr.std(0); s[s == 0] = 1; Xtr, Xte = (Xtr - m) / s, (Xte - m) / s
     sem = int(semilla % (2**31)); skf = StratifiedKFold(5, shuffle=True, random_state=sem)
     l2 = LogisticRegressionCV(Cs=10, cv=skf, penalty="l2", scoring="roc_auc", max_iter=2000).fit(Xtr, ytr); b = l2.coef_.ravel()
-    l1 = LogisticRegressionCV(Cs=np.logspace(-2, 1, 10), cv=skf, penalty="l1", solver="liblinear", max_iter=2000, random_state=sem).fit(Xtr, ytr); b1 = l1.coef_.ravel()  # grilla acotada: reproduce el tamaño de panel de la tesis
+    l1 = LogisticRegressionCV(Cs=np.logspace(-2, 1, 10), cv=skf, penalty="l1", solver="liblinear", max_iter=2000, random_state=sem).fit(Xtr, ytr); b1 = l1.coef_.ravel()
     rf = RandomForestClassifier(n_estimators=300, max_depth=None, random_state=sem).fit(Xtr, ytr)
     gb = GradientBoostingClassifier(n_estimators=200, learning_rate=0.1, max_depth=2, random_state=sem).fit(Xtr, ytr)
     acc = np.zeros(p)
@@ -77,7 +69,7 @@ def una_simulacion(semilla, n, mu_ca, delta, es_verdad, cv=0.67, efecto=1.0, rho
     verd = np.concatenate([es_verdad, np.zeros(N_NULAS, bool)]) & (efecto > 0); nula = np.arange(p) >= len(mu_ca)
     out = {}
     for k, v in imp.items():
-        orden = np.lexsort((rng.random(p), -v))  # desempate aleatorio
+        orden = np.lexsort((rng.random(p), -v))
         panel = np.flatnonzero(v != 0) if k == "L1" else orden[:TOP]
         tp = verd[panel].sum(); rec = tp / verd.sum() if verd.any() else np.nan; pre = tp / len(panel) if len(panel) else 0.0
         out[f"recall_{k}"] = rec; out[f"prec_{k}"] = pre
@@ -99,7 +91,7 @@ if __name__ == "__main__":
     salida = sys.argv[3] if len(sys.argv) > 3 else os.path.join(os.path.dirname(os.path.abspath(__file__)), "resultados")
     os.makedirs(salida, exist_ok=True)
     mu_ca, delta, es_verdad = verdad(ruta); print("biomarcadores verdaderos:", int(es_verdad.sum()), flush=True)
-    semillas = np.random.SeedSequence(SEMILLA_MAESTRA).generate_state(n_rep)  # mismas semillas en todos los escenarios
+    semillas = np.random.SeedSequence(SEMILLA_MAESTRA).generate_state(n_rep)
     resumen = []
     for nombre, kw in ESCENARIOS:
         kw = dict(kw); n = kw.pop("n", 50)

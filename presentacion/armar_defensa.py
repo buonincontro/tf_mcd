@@ -1,10 +1,3 @@
-"""Arma la presentación de la defensa sobre la plantilla de Austral Ingeniería y genera una vista previa en PNG.
-
-Requiere, sin versionar: la plantilla institucional en presentacion/plantillas_austral/templatePPT clases_2025.pptx
-y sus fondos e íconos (image1.jpg, image7.jpg, image10.jpg, image8.png) en presentacion/recursos/.
-La vista previa usa Century Gothic de la instalación de PowerPoint en macOS; sin esa fuente es solo aproximada.
-
-Uso: python presentacion/armar_defensa.py"""
 import os, copy
 from PIL import Image, ImageDraw, ImageFont
 from pptx import Presentation
@@ -29,7 +22,7 @@ px = lambda v: int(round(v * DPI))
 class Lamina:
     def __init__(self, fondo, notas=""): self.fondo, self.notas, self.items = fondo, notas, []
     def texto(self, x, y, w, h, paras, size=18, color=NAVY, bold=False, align="l", anchor="t", gap=6):
-        """paras: lista de str o dict(t, size, color, bold, bullet, gap)."""
+
         ps = [dict(t=p) if isinstance(p, str) else dict(p) for p in (paras if isinstance(paras, list) else [paras])]
         for p in ps:
             p.setdefault("size", size); p.setdefault("color", color); p.setdefault("bold", bold); p.setdefault("bullet", False); p.setdefault("gap", gap)

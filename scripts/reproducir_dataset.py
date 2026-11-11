@@ -1,14 +1,3 @@
-"""Reproduce el dataset sintético del notebook 01 sin pasos manuales.
-
-Descarga la Tabla 2 de Garg et al. (2016) en XML desde la API REST de Europe PMC
-(PMC4769231, licencia CC BY 4.0), la convierte en una tabla y repite la simulación
-del notebook 01 con la misma semilla (seed=42). El resultado coincide con el dataset
-original: Tabla 2 de la tesis (media 99.9 / 171.6 / 179.4; CV 0.47 / 0.64 / 0.73).
-
-Uso:
-    python scripts/reproducir_dataset.py            # escribe en data/
-    python scripts/reproducir_dataset.py otra_carpeta
-"""
 import os
 import re
 import sys
@@ -23,7 +12,6 @@ ID_TABLA = "pntd.0004490.t002"
 GRUPOS = [("N/H", "NH_", 30, 0.49, None), ("C/A", "CA_", 25, 0.67, "CA"), ("C/S", "CS_", 28, 0.77, "CS")]
 MEDIA_BASAL = 100
 
-
 def descargar_tabla2():
     with urllib.request.urlopen(URL, timeout=60) as r:
         raiz = ET.fromstring(r.read())
@@ -32,22 +20,20 @@ def descargar_tabla2():
     filas = [[texto(c) for c in tr if c.tag in ("td", "th")] for tr in tabla.iter("tr")]
     return pd.DataFrame(filas[1:], columns=filas[0]).replace("", np.nan)
 
-
 def generar_valores(media, cv, cantidad):
     varianza_relativa = np.log(1 + cv**2)
     mu = np.log(media) - varianza_relativa / 2
     return np.random.lognormal(mean=mu, sigma=np.sqrt(varianza_relativa), size=cantidad)
-
 
 def simular(tabla):
     tabla = tabla.copy()
     tabla["CA"] = pd.to_numeric(tabla["C/A-vs-N/H"].str.replace("−", "-"), errors="coerce")
     tabla["CS"] = pd.to_numeric(tabla["C/S-vs-N/H"].str.replace("−", "-"), errors="coerce")
     tabla["Protein name"] = tabla["Protein name"].ffill()
-    util = tabla.dropna(subset=["CA", "CS"])  # 192 de 222 filas
+    util = tabla.dropna(subset=["CA", "CS"])
 
     np.random.seed(42)
-    generar_valores(100, 0.49, 5)  # el notebook 01 consume 5 valores de prueba antes de simular
+    generar_valores(100, 0.49, 5)
     partes = []
     for grupo, prefijo, n, cv, columna in GRUPOS:
         datos = {}
@@ -60,7 +46,6 @@ def simular(tabla):
         parte["Paciente"] = [prefijo + str(i + 1) for i in range(n)]
         partes.append(parte)
     return pd.concat(partes, ignore_index=True)
-
 
 if __name__ == "__main__":
     salida = sys.argv[1] if len(sys.argv) > 1 else os.path.join(os.path.dirname(__file__), "..", "data")

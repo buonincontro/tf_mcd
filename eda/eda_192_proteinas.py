@@ -1,5 +1,3 @@
-"""EDA de las 192 proteínas del dataset sintético (Objetivo específico 1).
-Uso: python eda/eda_192_proteinas.py data/dataset_sintetico_pbmc.csv eda"""
 import sys, os, warnings
 import numpy as np, pandas as pd
 from scipy import stats
@@ -10,7 +8,6 @@ d = pd.read_csv(src); prot = list(d.columns[:-2]); G = ["N/H", "C/A", "C/S"]
 grp = {g: d.loc[d["Grupo"] == g, prot] for g in G}
 L = {g: np.log2(grp[g]) for g in G}
 
-# 1) Estadística descriptiva por proteína y grupo
 desc = pd.DataFrame(index=prot)
 for g in G:
     s = grp[g]
@@ -18,7 +15,6 @@ for g in G:
     desc[f"CV_{g}"] = s.std() / s.mean(); desc[f"min_{g}"] = s.min(); desc[f"max_{g}"] = s.max()
     desc[f"asimetria_{g}"] = s.skew()
 
-# 2) Comparaciones univariadas (Welch sobre log2, Mann-Whitney, FDR de Benjamini-Hochberg)
 def comparar(a, b, nombre):
     r = pd.DataFrame(index=prot)
     r[f"log2FC_{nombre}"] = L[a].mean() - L[b].mean()
@@ -35,7 +31,6 @@ comp["p_kruskal_3grupos"] = kw; comp["q_kruskal_3grupos"] = multipletests(kw, me
 tabla = pd.concat([desc, comp], axis=1); tabla.index.name = "proteina_spot"
 tabla.to_csv(os.path.join(out, "eda_estadisticas_por_proteina.csv"), float_format="%.6g")
 
-# 3) Resúmenes
 print("== Distribución, entre las 192 proteínas, de los estadísticos por proteína ==")
 q = lambda s: f"mediana {s.median():.2f} (P25–P75 {s.quantile(.25):.2f}–{s.quantile(.75):.2f}; mín {s.min():.2f}; máx {s.max():.2f})"
 for g in G:
@@ -51,11 +46,11 @@ for n in ["CA_vs_NH", "CS_vs_NH", "CS_vs_CA"]:
 print("Kruskal-Wallis 3 grupos q<0.05:", (comp["q_kruskal_3grupos"] < .05).sum())
 top = comp.sort_values("q_welch_CS_vs_CA").head(12)[["log2FC_CS_vs_CA", "d_cohen_CS_vs_CA", "p_welch_CS_vs_CA", "q_welch_CS_vs_CA", "q_mw_CS_vs_CA"]]
 print("\n== 12 proteínas con menor q (C/S vs C/A) =="); print(top.round(4).to_string())
-# correlaciones entre proteínas (dentro de cada grupo, en log2)
+
 for g in G:
     c = L[g].corr().values; iu = np.triu_indices_from(c, 1); v = c[iu]
     print(f"correlación entre proteínas {g}: mediana {np.median(v):.3f}, P2.5–P97.5 {np.quantile(v,.025):.2f}–{np.quantile(v,.975):.2f}, |r|>0.7: {(abs(v)>.7).sum()} de {len(v)}")
-# normalidad en log2 por proteína y grupo
+
 for g in G:
     pv = np.array([stats.shapiro(L[g][p]).pvalue for p in prot]); print(f"Shapiro-Wilk log2 {g}: rechaza (p<0.05) en {(pv<.05).mean()*100:.1f}% de las proteínas")
 print("faltantes:", int(d[prot].isna().sum().sum()), "| valores <= 0:", int((d[prot] <= 0).sum().sum()))

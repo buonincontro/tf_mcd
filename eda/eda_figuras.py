@@ -1,5 +1,3 @@
-"""Figuras del EDA de las 192 proteínas (Anexo, Figuras A1 a A5).
-Uso: python eda/eda_figuras.py data/dataset_sintetico_pbmc.csv eda/eda_estadisticas_por_proteina.csv eda/figuras"""
 import os, sys, numpy as np, pandas as pd, matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
@@ -14,7 +12,6 @@ L = np.log2(d[prot]); grupo = d["Grupo"]
 GRIS = {"N/H": "#b8b8b8", "C/A": "#767676", "C/S": "#1a1a1a"}; MARC = {"N/H": "o", "C/A": "s", "C/S": "^"}
 corto = lambda s: s.replace("_spot", " (spot ") + ")"
 
-# Figura A1: distribución de media y CV por proteína
 fig, ax = plt.subplots(1, 2, figsize=(7.2, 3.2))
 for a, (col, lab, logy) in zip(ax, [("media", "Media por proteína (unidades arbitrarias)", True), ("CV", "CV por proteína", False)]):
     datos = [t[f"{col}_{g}"].values for g in G]
@@ -30,7 +27,6 @@ ax[1].text(3.42, .77, "CV nominal", fontsize=7.5, va="center", ha="left", color=
 ax[0].set_title("A", loc="left", fontweight="bold"); ax[1].set_title("B", loc="left", fontweight="bold")
 fig.tight_layout(); fig.savefig(OUT + "/eda_fig_A1_distribucion.png"); plt.close(fig)
 
-# Figura A2: volcanes
 fig, ax = plt.subplots(1, 3, figsize=(7.2, 3.1), sharex=True, sharey=True)
 for a, (n, tit) in zip(ax, [("CA_vs_NH", "C/A vs. N/H"), ("CS_vs_NH", "C/S vs. N/H"), ("CS_vs_CA", "C/S vs. C/A")]):
     fc, p, q = t[f"log2FC_{n}"], t[f"p_welch_{n}"], t[f"q_welch_{n}"]; s = q < .05
@@ -43,7 +39,6 @@ ax[2].scatter([], [], s=11, color="#1a1a1a", label="q < 0.05"); ax[2].scatter([]
 ax[2].legend(frameon=False, fontsize=7.5, loc="upper right", handletextpad=.2)
 fig.tight_layout(); fig.savefig(OUT + "/eda_fig_A2_volcanes.png"); plt.close(fig)
 
-# Figura A3: mapa de calor (z por proteína respecto de N/H, en log2)
 ref = L[grupo == "N/H"]; Z = (L - ref.mean()) / ref.std()
 orden_p = t["log2FC_CS_vs_NH"].sort_values().index; orden_pac = np.concatenate([np.where(grupo == g)[0] for g in G])
 M = Z.loc[orden_pac, orden_p].T.values
@@ -58,7 +53,6 @@ for s in a.spines.values(): s.set_visible(False)
 cb = fig.colorbar(im, ax=a, fraction=.03, pad=.02, extend="both"); cb.set_label("Abundancia estandarizada (z respecto de N/H, log2)"); cb.outline.set_visible(False)
 fig.tight_layout(); fig.savefig(OUT + "/eda_fig_A3_heatmap.png"); plt.close(fig)
 
-# Figura A4: 12 proteínas con menor q en C/S vs. C/A
 top = t.sort_values("q_welch_CS_vs_CA").head(12).index
 fig, axs = plt.subplots(3, 4, figsize=(7.2, 6.3), sharex=True)
 rng = np.random.default_rng(1)
@@ -73,7 +67,6 @@ for a, p in zip(axs.ravel(), top):
 for a in axs[:, 0]: a.set_ylabel("log2 (abundancia)", fontsize=8)
 fig.tight_layout(); fig.savefig(OUT + "/eda_fig_A4_boxplots_top12.png"); plt.close(fig)
 
-# Figura A5: PCA sobre log2 estandarizado
 X = StandardScaler().fit_transform(L); pca = PCA(n_components=2, random_state=42); C = pca.fit_transform(X)
 fig, a = plt.subplots(figsize=(4.6, 3.8))
 for g in G:
