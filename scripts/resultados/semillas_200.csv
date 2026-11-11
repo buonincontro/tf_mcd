@@ -1,0 +1,4 @@
+,media,desvío,mínimo,% con AUC=1
+Regresión logística,0.97,0.051,0.7,60.0
+Random Forest,0.978,0.044,0.767,70.5
+Gradient Boosting,0.86,0.131,0.267,16.0

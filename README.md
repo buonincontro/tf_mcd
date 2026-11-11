@@ -1,8 +1,8 @@
-# Pipeline de Tesis de Maestría en Ciencia de Datos
+# Trabajo Final de Maestría: pipeline in silico
 
 Título de la tesis:  
 Estudio in silico para la generación de datos proteómicos sintéticos y evaluación de modelos predictivos en la enfermedad de Chagas.  
-Trabajo presentado para optar al título de Magíster en Ciencia de Datos.  
+Maestría en Explotación de Datos y Gestión del Conocimiento.  
 Facultad de Ingeniería, Universidad Austral.
 
 El repositorio contiene el pipeline in silico usado en la tesis: generación de un dataset proteómico
@@ -18,7 +18,9 @@ notebooks/
 └── 03_seleccion_candidatas.ipynb   # Objetivo específico 3: selección e interpretación de candidatas
 scripts/
 ├── reproducir_dataset.py           # descarga la Tabla 2 (Europe PMC) y regenera el dataset sintético sin pasos manuales
-└── tabla3_sin_fuga.py              # Tabla 3 con el escalado dentro de cada partición de la validación cruzada
+├── tabla3_sin_fuga.py              # Tabla 3 con el escalado dentro de cada partición de la validación cruzada
+├── semillas_200.py                 # sección 5.3 y Figura 6: diseño exploratorio repetido con 200 semillas
+└── resultados/
 eda/
 ├── eda_192_proteinas.py            # estadística descriptiva y comparaciones entre grupos de las 192 proteínas
 ├── eda_figuras.py                  # Figuras A1 a A5 del Anexo
@@ -26,6 +28,7 @@ eda/
 └── figuras/
 simulador/
 ├── simulador_completo.py           # simulador con verdad conocida (sección 4.4): 12 escenarios x 100 simulaciones
+├── control_calidad.py              # sección 5.5 y Figura 11: correlación, nulas y verificación lognormal
 ├── tablas_figuras.py               # Tablas 6 a 8 y Figuras 12 a 14
 └── resultados/                     # resumen, tablas, figuras y resultados por simulación
 presentacion/
@@ -66,10 +69,12 @@ No se utilizan datos de pacientes reales, el dataset es enteramente sintético.
 pip install -r requirements.txt
 python scripts/reproducir_dataset.py      # genera data/tabla2_garg2016.csv y data/dataset_sintetico_pbmc.csv
 python scripts/tabla3_sin_fuga.py --grid  # Tabla 3 con y sin fuga de información
+python scripts/semillas_200.py data/tabla2_garg2016.csv               # sección 5.3 y Figura 6
 python eda/eda_192_proteinas.py data/dataset_sintetico_pbmc.csv eda
 python eda/eda_figuras.py data/dataset_sintetico_pbmc.csv eda/eda_estadisticas_por_proteina.csv eda/figuras
 python simulador/simulador_completo.py data/tabla2_garg2016.csv 100   # unos 4 minutos en 10 núcleos
 python simulador/tablas_figuras.py
+python simulador/control_calidad.py data/tabla2_garg2016.csv          # sección 5.5 y Figura 11
 ```
 
 `reproducir_dataset.py` repite la simulación del notebook 01 con la misma semilla y obtiene el mismo dataset
@@ -87,11 +92,9 @@ independiente de 200 pacientes recupera más biomarcadores (0.73 frente a 0.35 c
 adicionales con estadio conocido, por lo que no es comparable con los demás criterios; se informa solo como referencia
 (`L2_perm_test` en `resultados/resumen.csv`).
 
-Decisiones que la tesis no detalla y que se fijaron en esta reimplementación: la regularización de L1 se busca entre
-0.01 y 10, y los datos faltantes se generan con una probabilidad que decrece con la abundancia (función logística,
-20% en promedio).
+Detalles que la tesis no especifica: la regularización de L1 se busca en 10 valores entre 0.01 y 10 (igual rango
+que la versión original) y los datos faltantes son más probables en las proteínas de menor abundancia (función
+logística, 20% en promedio), como se describe en la sección 4.4.
 
-## Pendiente
-
-Falta subir el código original del simulador con verdad conocida, la repetición con 200 semillas (sección 5.3), el
-control de calidad del simulador y la verificación de la distribución lognormal (sección 5.5).
+`simulador/control_calidad.py` usa el mismo generador para el control de calidad de la sección 5.5 (correlación por
+bloques, proteínas nulas, pares con |r| > 0.9 y verificación de la distribución lognormal, Figura 11).
