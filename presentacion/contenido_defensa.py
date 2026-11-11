@@ -7,7 +7,7 @@ def nueva(fondo=B, notas=""): L = Lamina(fondo, notas); LAMINAS.append(L); retur
 # 1 Portada
 L = nueva("image7.jpg", "Presentación personal y del trabajo. Agradecer al jurado. Anticipar la estructura: problema, datos, modelos, simulador con verdad conocida, conclusiones.")
 L.texto(0.9, 1.25, 10.6, 2.6, "Estudio in silico para la generación de datos proteómicos sintéticos y evaluación de modelos predictivos en la enfermedad de Chagas", size=32, bold=True)
-L.texto(0.9, 3.95, 10.6, 0.45, "Trabajo Final de la Maestría en Ciencia de Datos", size=20, color=NARANJA)
+L.texto(0.9, 3.95, 10.6, 0.8, "Trabajo Final de la Maestría en Explotación de Datos y Gestión del Conocimiento", size=20, color=NARANJA)
 L.texto(2.6, 5.35, 7.0, 1.3, [dict(t="Lic. Brenda Buonincontro", bold=True), "Director: Mg. Ezequiel Omar Nuske", dict(t="Facultad de Ingeniería · Universidad Austral · 13 de noviembre de 2026", size=13, color=GRIS)], size=18, gap=4)
 L.imagen(os.path.join(REC, "image8.png"), 9.6, 6.25, 3.75, 0.82)
 
